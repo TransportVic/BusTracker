@@ -1,0 +1,6 @@
+html
+  body
+    h1 Service history for bus #{fleet}
+    for date in Object.keys(byDays)
+      - services = byDays[date].join(', ')
+      p #{date} #{services}

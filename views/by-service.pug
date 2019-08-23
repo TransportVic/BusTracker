@@ -1,0 +1,13 @@
+html
+  body
+    h1 Bus deployments for service #{service}
+    h2 Deployments today
+    h3 #{todayDeployment.join(', ')}
+    h2 Models today
+    h3 #{todayDeployment.map(fleet => busList[fleet].model).filter((e, i, a) => a.indexOf(e) === i).sort((a,b)=>a.length-b.length).join(', ')}
+    h2 Bodyworks today
+    h3 #{todayDeployment.map(fleet => busList[fleet].bodywork).filter((e, i, a) => a.indexOf(e) === i).sort((a,b)=>a.length-b.length).join(', ')}
+    
+    for date in Object.keys(byDays)
+      - buses = byDays[date].join(', ')
+      p #{date} #{buses}
