@@ -20,9 +20,9 @@ for (let url of Object.values(urlData)) {
         let script = $('body > script:nth-child(8)').html().trim()
         let tripData = JSON.parse(script.slice(26, -2))
 
-        let trips = tripData.legend
+        let trips = tripData.routes
         trips.forEach(trip => {
-          data[trip.id] = trip.name
+          data[trip.id] = trip.name.replace('DEV_', '')
         })
 
         resolve()
