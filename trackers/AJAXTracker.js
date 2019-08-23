@@ -59,6 +59,7 @@ module.exports = class AJAXTracker {
     bus.date = now.format('YYYY-MM-DD')
     bus.time = minutesPastMidnight
     bus.dayOfWeek = today
+    bus.timestamp = +now
 
     LoadIntoDB.process(bus)
   }

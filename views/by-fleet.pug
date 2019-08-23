@@ -1,6 +1,19 @@
 html
   body
-    h1 Service history for bus #{fleet}
+    h1 Bus #{fleet}
+    
+    if nowRunning
+      h2 Now Running:
+      p #{nowRunning.tripName}
+    else
+      h2 Last Seen
+      if Object.keys(byDays).length == 0
+        p Never
+      else
+        
+        - let lastTrip = Object.values(byDays).reduce((a, e) => a.concat(e), []).sort((a, b) => b.timestamp - a.timestamp)[0]
+        p #{lastTrip.tripName} @ #{lastTrip.date}, #{Math.floor(lastTrip.time / 60)}:#{lastTrip.time % 60}
+    h2 Service history for bus #{fleet}
     for date in Object.keys(byDays)
-      - services = byDays[date].join(', ')
+      - services = byDays[date].map(trip => trip.service).join(', ')
       p #{date} #{services}

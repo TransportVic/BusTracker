@@ -59,20 +59,34 @@ database.connect({
   app.get('/bus/', async (req, res) => {
     let {fleet} = querystring.parse(url.parse(req.url).query)
     if (!fleet) return res.end()
+    const now = moment().tz('Australia/Melbourne')
 
     let tripsForBus = await trips.findDocuments({
       fleet
     }).toArray()
 
     let byDays = {}
+    let servicesByDays = {}
+    let nowRunning = null
     tripsForBus.forEach(trip => {
-      if (!byDays[trip.date]) byDays[trip.date] = []
+      if (!byDays[trip.date]) {
+        byDays[trip.date] = []
+        servicesByDays[trip.date] = []
+      }
 
-      if (!byDays[trip.date].includes(trip.service))
-      byDays[trip.date].push(trip.service)
-      byDays[trip.date] = byDays[trip.date].sort((a,b)=>a-b)
+      if (!servicesByDays[trip.date].includes(trip.service)) {
+        servicesByDays[trip.date].push(trip.service)
+        byDays[trip.date].push(trip)
+      }
+      byDays[trip.date] = byDays[trip.date].sort((a, b) => a.time - b.time)
     })
-    res.render('by-fleet', {byDays, fleet})
+
+    let today = now.format('YYYY-MM-DD')
+    if (byDays[today]) {
+      nowRunning = byDays[today].slice(-1)[0]
+    }
+    
+    res.render('by-fleet', {byDays, fleet, nowRunning})
   })
   app.get('/service/', async (req, res) => {
     const now = moment().tz('Australia/Melbourne')

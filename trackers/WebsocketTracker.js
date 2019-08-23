@@ -68,6 +68,7 @@ module.exports = class WebsocketTracker {
     bus.date = now.format('YYYY-MM-DD')
     bus.time = minutesPastMidnight
     bus.dayOfWeek = today
+    bus.timestamp = +now
 
     LoadIntoDB.process(bus)
   }
