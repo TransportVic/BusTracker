@@ -35,7 +35,7 @@ function loadBuses() {
 
         let marker = new mapboxgl.Marker(el)
         let popup = new mapboxgl.Popup({ offset: 25 })
-        .setHTML(`<h3> ${bus.properties.fleet} - ${bus.properties.service} </h3><p> ${bus.properties.service} </p>`)
+        .setHTML(`<h3> ${bus.properties.fleet} - ${bus.properties.service} </h3><p> ${bus.properties.tripName} </p>`)
 
         marker.setLngLat(bus.geometry.coordinates)
           .setPopup(popup)

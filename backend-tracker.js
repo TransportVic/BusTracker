@@ -3,7 +3,7 @@ const WebsocketTracker = require('./trackers/WebsocketTracker')
 const urlData = require('./url_data.json')
 
 Object.keys(urlData).forEach(service => {
-  if (service <= 929 || service.includes('Telebus')) {
+  if (service <= 982 || service.includes('Telebus')) {
     let url = urlData[service]
     if (url.includes('/live/'))
       new WebsocketTracker(service).start()
