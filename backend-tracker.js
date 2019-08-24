@@ -4,7 +4,7 @@ const urlData = require('./url_data.json')
 const moment = require('moment')
 require('moment-timezone')
 
-let periodicalTrackers = []
+let trackers = []
 
 function createTracker(service) {
   if (urlData[service].includes('/live/'))
@@ -17,22 +17,45 @@ let specialTrackers = ['V/Line: Cowes - Dandenong', 'Point Nepean Shuttle']
 Object.keys(urlData).forEach(service => {
   let url = urlData[service]
   if (service <= 929 || service.includes('Telebus') || specialTrackers.includes(service)) {
-    createTracker(service).start()
+    let tracker = {
+      service,
+      tracker: createTracker(service),
+      running: false
+    }
+    if (!url.includes('/live/')) {
+      tracker.hours = {
+        gt: 270, // 4.30am-
+        lt: 1380, // 11.00pm
+        m: 'a'
+      }
+    }
+
+    trackers.push(tracker)
   } else {
     if (service <= 982) { // nightbus
-      periodicalTrackers.push({
+      trackers.push({
         operationalDays: ['Fri', 'Sat', 'Sun'],
         service,
         tracker: createTracker(service),
-        running: false
+        running: false,
+        hours: {
+          gt: 1350, // 10.30pm-
+          lt: 420, // 6.30am
+          m: 'o'
+        }
       })
     } else { // school runs
       if (!url.includes('ventura.busminder.com.au')) // can't track those (for now??)
-        periodicalTrackers.push({
+        trackers.push({
           operationalDays: ['Mon', 'Tues', 'Wed', 'Thur', 'Fri'],
           service,
           tracker: createTracker(service),
-          running: false
+          running: false,
+          hours: {
+            gt: 360, // 6.00am-
+            lt: 1020, // 5.00pm
+            m: 'a'
+          }
         })
     }
   }
@@ -40,26 +63,34 @@ Object.keys(urlData).forEach(service => {
 
 const daysOfWeek = ['Sun', 'Mon', 'Tues', 'Wed', 'Thur', 'Fri', 'Sat']
 
-function checkPeriodicalTrackerStates() {
+function checkTrackers() {
   const now = moment().tz('Australia/Melbourne')
+  const startOfToday = now.clone().startOf('day')
+  const minutesPastMidnight = now.diff(startOfToday, 'minutes')
   const today = daysOfWeek[now.day()]
 
-  periodicalTrackers.forEach(tracker => {
-    if (tracker.operationalDays.includes(today)) {
-      if (!tracker.running) {
-        console.log('activated periodical tracker for ' + tracker.service)
-        tracker.tracker.start()
-        tracker.running = true
-      }
-    } else {
-      if (tracker.running) {
-        console.log('deactivated periodical tracker for' + tracker.service)
-        tracker.tracker.stop()
-        tracker.running = false
-      }
+  trackers.forEach(tracker => {
+    let newState = true
+
+    if (tracker.operationalDays)
+      newState = tracker.operationalDays.includes(today)
+    if (tracker.hours) {
+      let gt = minutesPastMidnight >= tracker.hours.gt;
+      let lt = minutesPastMidnight <= tracker.hours.lt;
+      newState = tracker.hours.m === 'o' ? gt || lt : gt && lt
+    }
+
+    if (newState && !tracker.running) {
+      console.log('activated tracker for ' + tracker.service)
+      tracker.tracker.start()
+      tracker.running = true
+    } else if (!newState && tracker.running) {
+      console.log('deactivated tracker for' + tracker.service)
+      tracker.tracker.stop()
+      tracker.running = false
     }
   })
 }
 
-checkPeriodicalTrackerStates()
-setInterval(checkPeriodicalTrackerStates, 1000 * 60 * 10)
+checkTrackers()
+setInterval(checkTrackers, 1000 * 60 * 10)
