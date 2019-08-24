@@ -7,6 +7,7 @@ const querystring = require('querystring')
 const url = require('url')
 const async = require('async')
 const path = require('path')
+const safeRegex = require('safe-regex')
 
 const app = express()
 
@@ -80,7 +81,7 @@ database.connect({
         servicesByDays[trip.date].push(trip.service)
         byDays[trip.date].push(trip)
       }
-      byDays[trip.date] = byDays[trip.date].sort((a, b) => a.time - b.time)
+      // byDays[trip.date] = byDays[trip.date].sort((a, b) => a.time - b.time)
     })
 
     let today = now.format('YYYY-MM-DD')
@@ -115,7 +116,7 @@ database.connect({
       if (!fleetNumbersSeenByDay[trip.date].includes(trip.fleet)) {
         fleetNumbersSeenByDay[trip.date].push(trip.fleet)
         byDays[trip.date].push(trip)
-        byDays[trip.date] = byDays[trip.date].sort((a, b) => a.time - b.time)
+        // byDays[trip.date] = byDays[trip.date].sort((a, b) => a.time - b.time)
       }
     })
 
@@ -128,6 +129,37 @@ database.connect({
     })
 
     res.render('by-service', {byDays, service, busList, nowRunning})
+  })
+
+  app.get('/model/', async (req, res) => {
+    const now = moment().tz('Australia/Melbourne')
+    const startOfToday = now.clone().startOf('day')
+    const minutesPastMidnight = now.diff(startOfToday, 'minutes')
+
+    let {model} = querystring.parse(url.parse(req.url).query)
+    if (!model || !safeRegex(model)) return res.end()
+
+    let busList = await buses.findDocuments({model: new RegExp(model, 'i')}).toArray()
+    let fleetNumbers = busList.map(bus => bus.fleet)
+
+    let tripsRunning = await trips.findDocuments({
+      $or: fleetNumbers.map(fleet => {return {fleet}}),
+      date: now.format('YYYY-MM-DD'),
+      time: {
+        $gt: minutesPastMidnight - 5
+      }
+    }).toArray()
+
+    let fleetNumbersSeen = []
+    let nowRunning = []
+    tripsRunning.sort((a, b) => b.timestamp - a.timestamp).forEach(trip => {
+      if (!fleetNumbersSeen.includes(trip.fleet)) {
+        fleetNumbersSeen.push(trip.fleet)
+        nowRunning.push(trip)
+      }
+    })
+
+    res.render('by-model', {nowRunning, busList, model})
   })
   app.listen(8080)
 

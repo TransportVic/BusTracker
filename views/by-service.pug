@@ -1,4 +1,13 @@
 html
+  head
+    script(src='https://api.mapbox.com/mapbox-gl-js/v1.2.0/mapbox-gl.js')
+    script(src='/static/utils.js')
+    script.
+      window.filterValue = "#{service}"
+      window.filterKey = 'service'
+    
+    link(href='https://api.mapbox.com/mapbox-gl-js/v1.2.0/mapbox-gl.css' rel='stylesheet')
+    link(href='/static/map.css' rel='stylesheet')
   body
     h1 Bus deployments for service #{service}
     h2 Now Active:
@@ -8,6 +17,10 @@ html
     h2 Bodyworks now
     h3 #{nowRunning.map(bus => busList[bus.fleet].bodywork).filter((e, i, a) => a.indexOf(e) === i).sort((a,b)=>a.length-b.length).join(', ')}
     
+    div(id='map' style='width: 100vw; height: 50vh;')
+    
     for date in Object.keys(byDays).sort((a, b) => +new Date(b) - +new Date(a))
       - buses = byDays[date].map(bus => bus.fleet).join(', ')
       p #{date} #{buses}
+      
+    script(src='/static/all.js')

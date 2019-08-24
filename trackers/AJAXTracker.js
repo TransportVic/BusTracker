@@ -24,6 +24,7 @@ module.exports = class AJAXTracker {
 
   performRequest() {
     request(this.url, (err, res, body) => {
+      if (!body) return setTimeout(this.performRequest.bind(this), 1000 * 60 * (1 + (Math.random()) * .5))
       const $ = cheerio.load(body)
       const scriptTag = $('#form1 > script:nth-child(6)')
       const scriptTagData = scriptTag.html().toString().trim().slice(26).replace(/\n/g, '').replace(/;var .+$/, '')
@@ -48,7 +49,7 @@ module.exports = class AJAXTracker {
       })
 
       if (this.active)
-      setTimeout(this.performRequest.bind(this), 1000 * 60 * (1 + (Math.random()) * .5))
+        setTimeout(this.performRequest.bind(this), 1000 * 60 * (1 + (Math.random()) * .5))
     })
   }
 

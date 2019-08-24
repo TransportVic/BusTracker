@@ -1,7 +1,7 @@
 mapboxgl.accessToken = 'pk.eyJ1IjoidW5pa2l0dHkiLCJhIjoiY2p6bnVvYWJ4MDdlNjNlbWsxMzJwcjh4OSJ9.qhftGWgQBDdGlaz3jVGvUQ';
 var map = new mapboxgl.Map({
   container: 'map',
-  style: 'mapbox://styles/mapbox/light-v10',
+  style: 'mapbox://styles/mapbox/streets-v11',
   zoom: 9,
   center: [145.173458, -38.066648]
 });
@@ -16,7 +16,8 @@ function loadBuses() {
     let geojson = {
       "type": "FeatureCollection",
       "features": buses.filter(bus => {
-        if (window.filterKey) return bus.fleet === window.filterKey
+        if (window.filterKey) return bus[window.filterKey] === window.filterValue ||
+          window.filterValue.includes(bus[window.filterKey])
 
         return true
       }).map(bus => {

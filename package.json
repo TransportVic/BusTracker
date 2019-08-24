@@ -21,6 +21,7 @@
     "querystring": "^0.2.0",
     "readline-sync": "^1.4.10",
     "request": "^2.88.0",
+    "safe-regex": "^2.0.2",
     "signalr-client": "0.0.19",
     "websocket": "^1.0.29"
   }
