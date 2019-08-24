@@ -141,6 +141,7 @@ database.connect({
 
     let busList = await buses.findDocuments({model: new RegExp(model, 'i')}).toArray()
     let fleetNumbers = busList.map(bus => bus.fleet)
+    if (!fleetNumbers.length) fleetNumbers = [0]
 
     let tripsRunning = await trips.findDocuments({
       $or: fleetNumbers.map(fleet => {return {fleet}}),
