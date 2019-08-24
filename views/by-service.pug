@@ -8,6 +8,6 @@ html
     h2 Bodyworks now
     h3 #{nowRunning.map(bus => busList[bus.fleet].bodywork).filter((e, i, a) => a.indexOf(e) === i).sort((a,b)=>a.length-b.length).join(', ')}
     
-    for date in Object.keys(byDays)
+    for date in Object.keys(byDays).sort((a, b) => +new Date(b) - +new Date(a))
       - buses = byDays[date].map(bus => bus.fleet).join(', ')
       p #{date} #{buses}
