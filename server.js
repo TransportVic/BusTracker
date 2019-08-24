@@ -40,7 +40,7 @@ database.connect({
 
     let allTrips = await trips.findDocuments({
       date: now.format('YYYY-MM-DD'),
-      time: { $gt: minutesPastMidnight - 10 }
+      time: { $gt: minutesPastMidnight - 5 }
     }).toArray()
 
     let tripsByBus = {}
@@ -70,7 +70,7 @@ database.connect({
     let byDays = {}
     let servicesByDays = {}
     let nowRunning = null
-    tripsForBus.forEach(trip => {
+    tripsForBus.sort((a, b) => b.timestamp - a.timestamp).forEach(trip => {
       if (!byDays[trip.date]) {
         byDays[trip.date] = []
         servicesByDays[trip.date] = []
@@ -86,7 +86,7 @@ database.connect({
     let today = now.format('YYYY-MM-DD')
     if (byDays[today]) {
       nowRunning = byDays[today].slice(-1)[0]
-      if (nowRunning.time < minutesPastMidnight - 10) nowRunning = null
+      if (nowRunning.time < minutesPastMidnight - 5) nowRunning = null
     }
 
     res.render('by-fleet', {byDays, fleet, nowRunning})

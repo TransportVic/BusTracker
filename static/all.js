@@ -1,4 +1,3 @@
-
 mapboxgl.accessToken = 'pk.eyJ1IjoidW5pa2l0dHkiLCJhIjoiY2p6bnVvYWJ4MDdlNjNlbWsxMzJwcjh4OSJ9.qhftGWgQBDdGlaz3jVGvUQ';
 var map = new mapboxgl.Map({
   container: 'map',
@@ -16,7 +15,11 @@ function loadBuses() {
   }, (err, status, buses) => {
     let geojson = {
       "type": "FeatureCollection",
-      "features": buses.map(bus => {
+      "features": buses.filter(bus => {
+        if (window.filterKey) return bus.fleet === window.filterKey
+
+        return true
+      }).map(bus => {
         return {
           "type": "Feature",
           "geometry": {

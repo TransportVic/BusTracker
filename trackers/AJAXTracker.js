@@ -48,7 +48,7 @@ module.exports = class AJAXTracker {
       })
 
       if (this.active)
-      setTimeout(this.performRequest.bind(this), 1000 * 60 * (5 + (Math.random() - 0.5) * 3))
+      setTimeout(this.performRequest.bind(this), 1000 * 60 * (1 + (Math.random()) * .5))
     })
   }
 
