@@ -106,7 +106,7 @@ database.connect({
 
     let byDays = {}
     let fleetNumbersSeenByDay = {}
-    tripsForBus.forEach(trip => {
+    tripsForBus.sort((a, b) => b.timestamp - a.timestamp).forEach(trip => {
       if (!byDays[trip.date]) {
         byDays[trip.date] = []
         fleetNumbersSeenByDay[trip.date] = []
@@ -120,7 +120,7 @@ database.connect({
     })
 
     let todayDeployment = byDays[now.format('YYYY-MM-DD')] || []
-    let nowRunning = todayDeployment.filter(bus => bus.time > minutesPastMidnight - 10)
+    let nowRunning = todayDeployment.filter(bus => bus.time > minutesPastMidnight - 5)
     let busList = {}
 
     await async.forEach(nowRunning, async bus => {
