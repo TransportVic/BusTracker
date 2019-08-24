@@ -60,6 +60,8 @@ database.connect({
     let {fleet} = querystring.parse(url.parse(req.url).query)
     if (!fleet) return res.end()
     const now = moment().tz('Australia/Melbourne')
+    const startOfToday = now.clone().startOf('day')
+    const minutesPastMidnight = now.diff(startOfToday, 'minutes')
 
     let tripsForBus = await trips.findDocuments({
       fleet
@@ -84,6 +86,7 @@ database.connect({
     let today = now.format('YYYY-MM-DD')
     if (byDays[today]) {
       nowRunning = byDays[today].slice(-1)[0]
+      if (nowRunning.time < minutesPastMidnight - 10) nowRunning = null
     }
 
     res.render('by-fleet', {byDays, fleet, nowRunning})

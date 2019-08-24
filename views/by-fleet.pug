@@ -12,7 +12,8 @@ html
       else
         
         - let lastTrip = Object.values(byDays).reduce((a, e) => a.concat(e), []).sort((a, b) => b.timestamp - a.timestamp)[0]
-        p #{lastTrip.tripName} @ #{lastTrip.date}, #{Math.floor(lastTrip.time / 60)}:#{lastTrip.time % 60}
+        - function pad2(data) { return [0, 0, ...data.toString()].slice(-2).join('') }
+        p #{lastTrip.tripName} @ #{lastTrip.date}, #{pad2(Math.floor(lastTrip.time / 60))}:#{pad2(lastTrip.time % 60)}
     h2 Service history for bus #{fleet}
     for date in Object.keys(byDays)
       - services = byDays[date].map(trip => trip.service).join(', ')

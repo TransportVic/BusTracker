@@ -18,7 +18,8 @@ module.exports = {
       fleet: bus.fleet,
       service: bus.service,
       date: bus.date,
-      time: { $gt: bus.time - 10 }
+      time: { $gt: bus.time - 10 },
+      tripName: bus.tripName
     }
 
     let trip = await trips.findDocument(key)
