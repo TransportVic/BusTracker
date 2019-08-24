@@ -3,15 +3,15 @@ html
     script(src='https://api.mapbox.com/mapbox-gl-js/v1.2.0/mapbox-gl.js')
     script(src='/static/utils.js')
     script.
-      window.filterValue = "#{service}"
-      window.filterKey = 'service'
+      window.filterValue = ["!{Object.keys(busList).join('", "')}"]
+      window.filterKey = 'fleet'
     
     link(href='https://api.mapbox.com/mapbox-gl-js/v1.2.0/mapbox-gl.css' rel='stylesheet')
     link(href='/static/map.css' rel='stylesheet')
   body
     h1 Bus deployments for service #{service}
     h2 Now Active:
-    h3 #{nowRunning.map(bus => bus.fleet).join(', ')}
+    h3 #{nowRunning.sort((a, b) => a.fleet - b.fleet).map(bus => bus.fleet).join(', ')}
     h2 Models now
     h3 #{nowRunning.map(bus => busList[bus.fleet].model).filter((e, i, a) => a.indexOf(e) === i).sort((a,b)=>a.length-b.length).join(', ')}
     h2 Bodyworks now
@@ -21,7 +21,7 @@ html
     
     h2 Deployment History
     for date in Object.keys(byDays).sort((a, b) => +new Date(b) - +new Date(a))
-      - buses = byDays[date].map(bus => bus.fleet).join(', ')
+      - buses = byDays[date].sort((a, b) => a.fleet - b.fleet).map(bus => bus.fleet).join(', ')
       p #{date} #{buses}
       
     script(src='/static/all.js')
