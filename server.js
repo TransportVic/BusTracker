@@ -80,8 +80,8 @@ database.connect({
       if (!servicesByDays[trip.date].includes(trip.service)) {
         servicesByDays[trip.date].push(trip.service)
         byDays[trip.date].push(trip)
+        byDays[trip.date] = byDays[trip.date].sort((a, b) => a.time - b.time)
       }
-      // byDays[trip.date] = byDays[trip.date].sort((a, b) => a.time - b.time)
     })
 
     let today = now.format('YYYY-MM-DD')
@@ -116,7 +116,7 @@ database.connect({
       if (!fleetNumbersSeenByDay[trip.date].includes(trip.fleet)) {
         fleetNumbersSeenByDay[trip.date].push(trip.fleet)
         byDays[trip.date].push(trip)
-        // byDays[trip.date] = byDays[trip.date].sort((a, b) => a.time - b.time)
+        byDays[trip.date] = byDays[trip.date].sort((a, b) => a.time - b.time)
       }
     })
 
