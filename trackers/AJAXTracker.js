@@ -42,7 +42,7 @@ module.exports = class AJAXTracker {
             service: this.service,
             runNumber: bus.id,
             position: [bus.lat, bus.lng],
-            tripName: trip.name
+            tripName: trip.name.replace('DEV_', '')
           })
         })
       })
