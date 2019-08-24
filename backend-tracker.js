@@ -13,9 +13,10 @@ function createTracker(service) {
     return new AJAXTracker(service)
 }
 
+let specialTrackers = ['V/Line: Cowes - Dandenong', 'Point Nepean Shuttle']
 Object.keys(urlData).forEach(service => {
   let url = urlData[service]
-  if (service <= 929 || service.includes('Telebus') || service === 'Point Nepean Shuttle') {
+  if (service <= 929 || service.includes('Telebus') || specialTrackers.includes(service)) {
     createTracker(service).start()
   } else {
     if (service <= 982) { // nightbus
