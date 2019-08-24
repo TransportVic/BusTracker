@@ -13,7 +13,7 @@ function createTracker(service) {
     return new AJAXTracker(service)
 }
 
-let specialTrackers = ['V/Line: Cowes - Dandenong', 'Point Nepean Shuttle']
+let specialTrackers = ['V/Line: Cowes - Dandenong', 'Point Nepean Shuttle', 'Koo Wee Rup - Pakenham']
 Object.keys(urlData).forEach(service => {
   let url = urlData[service]
   if (service <= 929 || service.includes('Telebus') || specialTrackers.includes(service)) {
@@ -34,12 +34,12 @@ Object.keys(urlData).forEach(service => {
   } else {
     if (service <= 982) { // nightbus
       trackers.push({
-        operationalDays: ['Fri', 'Sat', 'Sun'],
+        operationalDays: ['Fri', 'Sat', 'Sun', 'Mon'],
         service,
         tracker: createTracker(service),
         running: false,
         hours: {
-          gt: 1350, // 10.30pm-
+          gt: 1380, // 11.00pm
           lt: 420, // 6.30am
           m: 'o'
         }
