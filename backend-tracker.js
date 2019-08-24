@@ -24,8 +24,8 @@ Object.keys(urlData).forEach(service => {
     }
     if (!url.includes('/live/')) {
       tracker.hours = {
-        gt: 270, // 4.30am-
-        lt: 1380, // 11.00pm
+        gt: 300, // 5.00am-
+        lt: 1439, // 11.59pm
         m: 'a'
       }
     }
@@ -93,4 +93,4 @@ function checkTrackers() {
 }
 
 checkTrackers()
-setInterval(checkTrackers, 1000 * 60 * 10)
+setInterval(checkTrackers, 1000 * 60 * 1)
