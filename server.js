@@ -85,11 +85,14 @@ database.connect({
     if (byDays[today]) {
       nowRunning = byDays[today].slice(-1)[0]
     }
-    
+
     res.render('by-fleet', {byDays, fleet, nowRunning})
   })
+
   app.get('/service/', async (req, res) => {
     const now = moment().tz('Australia/Melbourne')
+    const startOfToday = now.clone().startOf('day')
+    const minutesPastMidnight = now.diff(startOfToday, 'minutes')
 
     let {service} = querystring.parse(url.parse(req.url).query)
     if (!service) return res.end()
@@ -99,22 +102,29 @@ database.connect({
     }).toArray()
 
     let byDays = {}
+    let fleetNumbersSeenByDay = {}
     tripsForBus.forEach(trip => {
-      if (!byDays[trip.date]) byDays[trip.date] = []
+      if (!byDays[trip.date]) {
+        byDays[trip.date] = []
+        fleetNumbersSeenByDay[trip.date] = []
+      }
 
-      if (!byDays[trip.date].includes(trip.fleet))
-      byDays[trip.date].push(trip.fleet)
-      byDays[trip.date] = byDays[trip.date].sort((a,b)=>a-b)
+      if (!fleetNumbersSeenByDay[trip.date].includes(trip.fleet)) {
+        fleetNumbersSeenByDay[trip.date].push(trip.fleet)
+        byDays[trip.date].push(trip)
+        byDays[trip.date] = byDays[trip.date].sort((a, b) => a.time - b.time)
+      }
     })
 
     let todayDeployment = byDays[now.format('YYYY-MM-DD')] || []
+    let nowRunning = todayDeployment.filter(bus => bus.time > minutesPastMidnight - 10)
     let busList = {}
 
-    await async.forEach(todayDeployment, async fleet => {
-      busList[fleet] = await buses.findDocument({fleet})
+    await async.forEach(nowRunning, async bus => {
+      busList[bus.fleet] = await buses.findDocument({fleet: bus.fleet})
     })
 
-    res.render('by-service', {byDays, service, busList, todayDeployment})
+    res.render('by-service', {byDays, service, busList, nowRunning})
   })
   app.listen(8080)
 
