@@ -15,8 +15,8 @@ module.exports = class MongoDatabaseConnection {
     }
 
     return new Promise(resolve => {
-      MongoClient.connect(this.databaseURL, Object.assign(options, { useNewUrlParser: true }), (err, database) => {
-        this.database = database.db(this.databaseName)
+      MongoClient.connect(this.databaseURL, Object.assign(options, { useNewUrlParser: true, useUnifiedTopology: true }), (err, client) => {
+        this.database = client.db(this.databaseName)
 
         resolve()
         if (typeof callback == 'function')
