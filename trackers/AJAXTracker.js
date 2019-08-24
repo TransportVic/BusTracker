@@ -13,6 +13,7 @@ module.exports = class AJAXTracker {
   constructor (service) {
     this.url = null
     this.service = service
+    this.active = false
 
     if (urlData[service]) {
       if (urlData[service].includes('/School/RouteMap.aspx')) {
@@ -46,6 +47,7 @@ module.exports = class AJAXTracker {
         })
       })
 
+      if (this.active)
       setTimeout(this.performRequest.bind(this), 1000 * 60 * (5 + (Math.random() - 0.5) * 3))
     })
   }
@@ -65,6 +67,11 @@ module.exports = class AJAXTracker {
   }
 
   start() {
+    this.active = true
     this.performRequest()
+  }
+
+  stop() {
+    this.active = false
   }
 }

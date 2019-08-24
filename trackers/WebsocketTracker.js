@@ -32,7 +32,10 @@ module.exports = class WebsocketTracker {
       },
       messageReceived: this.onMessageRecieved.bind(this),
       connectFailed: () => {},
-      connected: () => {}
+      connected: () => {},
+      onerror: () => {},
+      disconnected: () => {},
+      reconnecting: () => true
     }
   }
 
@@ -75,5 +78,9 @@ module.exports = class WebsocketTracker {
 
   start() {
     this.client.start()
+  }
+
+  stop() {
+    this.client.end()
   }
 }
