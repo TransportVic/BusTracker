@@ -53,8 +53,8 @@ module.exports = class WebsocketTracker {
       const runNumber = bus.BusId
 
       let service = this.service
-      if (tripCodes[bus.TripId].match(/^\w{3,4} .* to .*$/)) {
-        service = tripCodes[bus.TripId].match(/^(\w{3,4}) .* to .*$/)[1]
+      if (tripCodes[bus.TripId].match(/^\w{3,4} .* (to|-) .*$/)) {
+        service = tripCodes[bus.TripId].match(/^(\w{3,4}) .* (to|-) .*$/)[1]
       }
 
       this.updateBusLocation({

@@ -7,6 +7,7 @@ var map = new mapboxgl.Map({
 });
 
 let markers = {}
+let previousUpdateFleets = []
 
 function loadBuses() {
   $.ajax({
@@ -51,6 +52,16 @@ function loadBuses() {
           .setHTML(`<h3> ${bus.properties.fleet} - ${bus.properties.service} </h3><p> ${bus.properties.tripName} </p>`)
       }
     })
+
+    let currentFleet = geojson.features.map(bus => bus.properties.fleet)
+    previousUpdateFleets.forEach(fleet => {
+      if (!currentFleet.includes(fleet)) {
+        markers[fleet].marker.remove()
+        markers[fleet] = null
+      }
+    })
+
+    previousUpdateFleets = currentFleet
   })
 }
 

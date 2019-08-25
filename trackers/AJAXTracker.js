@@ -38,12 +38,20 @@ module.exports = class AJAXTracker {
           busIDs.push(bus.id)
 
           if (!bus.registration.match(/BS?(\d+)/)) return
+
+          let service = this.service
+          trip.name = trip.name.replace('DEV_', '').trim()
+          
+          if (trip.name.match(/^\w{3,4} .* (to|-) .*$/)) {
+            service = trip.name.match(/^(\w{3,4}) .* (to|-) .*$/)[1]
+          }
+
           this.updateBusLocation({
             fleet: bus.registration.match(/BS?(\d+)/)[1],
-            service: this.service,
+            service: service,
             runNumber: bus.id,
             position: [bus.lat, bus.lng],
-            tripName: trip.name.replace('DEV_', '')
+            tripName: trip.name
           })
         })
       })
