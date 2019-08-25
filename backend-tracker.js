@@ -40,7 +40,7 @@ Object.keys(urlData).forEach(service => {
   } else {
     if (service <= 982) { // nightbus
       trackers.push({
-        operationalDays: ['Fri', 'Sat', 'Sun', 'Mon'],
+        operationalDays: ['Fri', 'Sat', 'Sun'],
         service,
         tracker: createTracker(service),
         running: false,
