@@ -68,17 +68,20 @@ function checkTrackers() {
   const startOfToday = now.clone().startOf('day')
   const minutesPastMidnight = now.diff(startOfToday, 'minutes')
   const today = daysOfWeek[now.day()]
-
+console.log(today)
   trackers.forEach(tracker => {
-    let newState = true
+    let runsToday = true
+    let runsNow = true
 
     if (tracker.operationalDays)
-      newState = tracker.operationalDays.includes(today)
+      runsToday = tracker.operationalDays.includes(today)
     if (tracker.hours) {
       let gt = minutesPastMidnight >= tracker.hours.gt;
       let lt = minutesPastMidnight <= tracker.hours.lt;
-      newState = tracker.hours.m === 'o' ? gt || lt : gt && lt
+      runsNow = tracker.hours.m === 'o' ? gt || lt : gt && lt
     }
+
+    let newState = runsToday && runsNow
 
     if (newState && !tracker.running) {
       console.log('activated tracker for ' + tracker.service)
