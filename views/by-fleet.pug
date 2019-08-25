@@ -1,13 +1,13 @@
 html
   head
     script(src='https://api.mapbox.com/mapbox-gl-js/v1.2.0/mapbox-gl.js')
-    script(src='/static/utils.js')
+    script(src='/tracker/static/utils.js')
     script.
       window.filterValue = location.search.slice(1).split('&').filter(e=>e.startsWith('fleet='))[0].slice(6)
       window.filterKey = 'fleet'
     
     link(href='https://api.mapbox.com/mapbox-gl-js/v1.2.0/mapbox-gl.css' rel='stylesheet')
-    link(href='/static/map.css' rel='stylesheet')
+    link(href='/tracker/static/map.css' rel='stylesheet')
   body
     h1 Bus #{fleet}
 
@@ -30,4 +30,4 @@ html
       - services = byDays[date].map(trip => trip.service).sort((a, b) => a - b).join(', ')
       p #{date} #{services}
       
-    script(src='/static/all.js')
+    script(src='/tracker/static/all.js')

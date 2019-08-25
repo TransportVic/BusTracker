@@ -68,7 +68,7 @@ function checkTrackers() {
   const startOfToday = now.clone().startOf('day')
   const minutesPastMidnight = now.diff(startOfToday, 'minutes')
   const today = daysOfWeek[now.day()]
-console.log(today)
+
   trackers.forEach(tracker => {
     let runsToday = true
     let runsNow = true

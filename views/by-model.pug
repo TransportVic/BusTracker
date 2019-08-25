@@ -1,13 +1,13 @@
 html
   head
     script(src='https://api.mapbox.com/mapbox-gl-js/v1.2.0/mapbox-gl.js')
-    script(src='/static/utils.js')
+    script(src='/tracker/static/utils.js')
     script.
       window.filterValue = ["!{busList.map(bus => bus.fleet).join('", "')}"]
       window.filterKey = 'fleet'
     
     link(href='https://api.mapbox.com/mapbox-gl-js/v1.2.0/mapbox-gl.css' rel='stylesheet')
-    link(href='/static/map.css' rel='stylesheet')
+    link(href='/tracker/static/map.css' rel='stylesheet')
   body
     h1 Bus deployments by model: #{model}
     h2 Now Active:
@@ -15,5 +15,5 @@ html
       p #{bus.fleet}: #{bus.service}
       
     div(id='map' style='width: 100vw; height: 50vh;')
-    script(src='/static/all.js')
+    script(src='/tracker/static/all.js')
     

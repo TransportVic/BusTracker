@@ -1,13 +1,13 @@
 html
   head
     script(src='https://api.mapbox.com/mapbox-gl-js/v1.2.0/mapbox-gl.js')
-    script(src='/static/utils.js')
+    script(src='/tracker/static/utils.js')
     script.
       window.filterValue = ["!{Object.keys(busList).join('", "')}"]
       window.filterKey = 'fleet'
     
     link(href='https://api.mapbox.com/mapbox-gl-js/v1.2.0/mapbox-gl.css' rel='stylesheet')
-    link(href='/static/map.css' rel='stylesheet')
+    link(href='/tracker/static/map.css' rel='stylesheet')
   body
     h1 Bus deployments for service #{service}
     h2 Now Active:
@@ -24,4 +24,4 @@ html
       - buses = byDays[date].sort((a, b) => a.fleet - b.fleet).map(bus => bus.fleet).join(', ')
       p #{date} #{buses}
       
-    script(src='/static/all.js')
+    script(src='/tracker/static/all.js')

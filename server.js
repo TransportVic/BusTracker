@@ -12,7 +12,7 @@ const safeRegex = require('safe-regex')
 const app = express()
 
 app.use('/static', express.static(path.join(__dirname, 'static')))
-app.set('views', './views')
+app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'pug')
 if (process.env['NODE_ENV'] && process.env['NODE_ENV'] === 'prod') { app.set('view cache', true) }
 app.set('x-powered-by', false)
@@ -162,6 +162,8 @@ database.connect({
 
     res.render('by-model', {nowRunning, busList, model})
   })
-  app.listen(8080)
+  // app.listen(8080)
 
 })
+
+module.exports = app

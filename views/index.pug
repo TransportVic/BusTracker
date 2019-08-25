@@ -1,12 +1,12 @@
 html
   body
-    a(href='/view-all') view all buses
-    form(action='/bus' method='get')
+    a(href='/tracker/view-all') view all buses
+    form(action='/tracker/bus' method='get')
       label search by fleet #
       input(name='fleet')
-    form(action='/service' method='get')
+    form(action='/tracker/service' method='get')
       label search by service #
       input(name='service')
-    form(action='/model' method='get')
+    form(action='/tracker/model' method='get')
       label search by model
       input(name='model')

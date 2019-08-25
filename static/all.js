@@ -11,7 +11,7 @@ let markers = {}
 function loadBuses() {
   $.ajax({
     method: 'GET',
-    url: '/all'
+    url: '/tracker/all'
   }, (err, status, buses) => {
     let geojson = {
       "type": "FeatureCollection",
