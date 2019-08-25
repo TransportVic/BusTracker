@@ -34,6 +34,41 @@ database.connect({
   app.get('/view-all', async (req, res) => {
     res.render('view-all')
   })
+  app.get('/last-seen-all', async (req, res) => {
+    let lastTrips = await trips.aggregate([
+      {$sort: {timestamp: -1}},
+      {
+        $group: {
+          _id: {
+            $toInt: "$fleet"
+          },
+          fleet: {$first: "$fleet"},
+          tripName: {$first: "$tripName"},
+          date: {$first: "$date"},
+          time: {$first: "$time"},
+          timestamp: {$first: "$timestamp"}
+        }
+      },
+      {$sort: {_id: 1}}
+    ]).toArray()
+
+    let lastTripsByFleet = {}
+    lastTrips.forEach(trip => {
+      trip.timestamp = moment(trip.timestamp).format("YYYYMMDDHHmmss")
+      lastTripsByFleet[trip.fleet] = trip
+    })
+
+    let allBuses = (await buses.aggregate([
+      { $project: {fleet: 1, _id: 0}}
+    ]).toArray()).map(bus => bus.fleet)
+
+    let busLastSeen = {}
+    allBuses.forEach(fleet => {
+      busLastSeen[fleet] = lastTripsByFleet[fleet]
+    })
+
+    res.render('last-seen-all', {busLastSeen})
+  })
   app.get('/all', async (req, res) => {
     const now = moment().tz('Australia/Melbourne')
     const startOfToday = now.clone().startOf('day')

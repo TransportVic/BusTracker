@@ -1,0 +1,25 @@
+html
+  head
+    script(src='/tracker/static/sorttable.js')
+    link(rel='stylesheet' href='/tracker/static/table.css')
+  body
+    table(class='sortable')
+      thead
+        tr
+          th Fleet #
+          th Last Seen
+          th Service
+          th History
+      tbody
+        - function pad2(data) { return [0, 0, ...data.toString()].slice(-2).join('') }
+        for fleet in Object.keys(busLastSeen)
+          -
+            let bus = busLastSeen[fleet]
+            if (!bus) bus = { tripName: '', lastSeen: 'Never' }
+            else bus.lastSeen = `${bus.date}, ${pad2(Math.floor(bus.time / 60))}:${pad2(bus.time % 60)}`
+          tr
+            td #{fleet}
+            td(sorttable_customkey=bus.tripName ? bus.timestamp : "0") #{bus.lastSeen}
+            td #{bus.tripName}
+            td
+              a(href=`/tracker/bus?fleet=${fleet}`) History
