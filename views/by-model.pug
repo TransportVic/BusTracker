@@ -2,6 +2,7 @@ html
   head
     script(src='https://api.mapbox.com/mapbox-gl-js/v1.2.0/mapbox-gl.js')
     script(src='/tracker/static/utils.js')
+    script(src='/tracker/static/depots.js')
     script.
       window.filterValue = ["!{busList.map(bus => bus.fleet).join('", "')}"]
       window.filterKey = 'fleet'

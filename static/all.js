@@ -66,6 +66,27 @@ function loadBuses() {
 }
 
 map.on('load', function () {
+  if (window.depots) {
+    map.addLayer({
+      id: 'depots',
+      type: 'fill',
+      source: {
+        type: 'geojson',
+        data: window.depots
+      },
+      paint: {
+        'fill-color': '#58BCAF',
+        'fill-outline-color': '#4A6965'
+      }
+    })
+    map.on('click', 'depots', function (e) {
+      new mapboxgl.Popup()
+        .setLngLat(e.lngLat)
+        .setHTML(e.features[0].properties.Name + " Depot")
+        .addTo(map);
+    });
+  }
+
   setInterval(loadBuses, 2500)
   loadBuses()
 });
