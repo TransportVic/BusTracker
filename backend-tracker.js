@@ -28,6 +28,12 @@ Object.keys(urlData).forEach(service => {
         lt: 1439, // 11.59pm
         m: 'a'
       }
+    } else {
+      tracker.hours = {
+        gt: 285, // 4.45am-
+        lt: 30, // 0.30am
+        m: 'o'
+      }
     }
 
     trackers.push(tracker)
