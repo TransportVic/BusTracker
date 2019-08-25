@@ -41,7 +41,7 @@ module.exports = class AJAXTracker {
 
           let service = this.service
           trip.name = trip.name.replace('DEV_', '').trim()
-          
+
           if (trip.name.match(/^\w{3,4} .* (to|-) .*$/)) {
             service = trip.name.match(/^(\w{3,4}) .* (to|-) .*$/)[1]
           }
@@ -57,7 +57,7 @@ module.exports = class AJAXTracker {
       })
 
       if (this.active)
-        setTimeout(this.performRequest.bind(this), 1000 * 60 * (1 + (Math.random()) * .5))
+        setTimeout(this.performRequest.bind(this), 1000 * 60 * (2.5 + (Math.random()) * .5))
     })
   }
 
