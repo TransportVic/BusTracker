@@ -24,14 +24,29 @@ let busQuery = {$or: [
     model: new RegExp('volvo .+ea', 'i')
   },
   {
+    model: new RegExp('optare', 'i')
+  },
+  {
     depot: 'Rail'
   },
   {
     depot: 'Rosebud'
   },
   {
+    fleet: '287'
+  },
+  {
     fleet: '858'
-  }
+  },
+  {
+    fleet: '1181'
+  },
+  {
+    fleet: '1183'
+  },
+  {
+    fleet: '1196'
+  },
 ]}
 
 let tripQuery = ['788', '631', '703', '733', '737', '800', '802', '804', '862'].map(s => {return{service:s}})
@@ -64,7 +79,10 @@ database.connect({
       })
 
       if (svcMatch && !fleetNumbers.includes(trip.fleet)) {
-        busList.push(await buses.findDocument({fleet: trip.fleet}))
+        let bus = await buses.findDocument({fleet: trip.fleet})
+        if (bus)
+          busList.push(bus)
+        else return true
       }
 
       return fleetMatch || svcMatch
@@ -83,7 +101,10 @@ database.connect({
       nowRunning.forEach(trip => {
         if (!lastUpdateSeen.includes(trip.fleet + '-' + trip.service)) {
           let bus = busList.filter(bus => bus.fleet === trip.fleet)[0]
-          showNotification('update', `#${trip.fleet}: ${trip.tripName}`, bus.model)
+          if (!bus)
+            showNotification('update', `#${trip.fleet}: ${trip.tripName}`, 'Unknown model')
+          else
+            showNotification('update', `#${trip.fleet}: ${trip.tripName}`, bus.model)
         }
       })
     lastUpdateSeen = nowRunning.map(trip => trip.fleet + '-' + trip.service)

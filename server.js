@@ -125,7 +125,7 @@ database.connect({
     let busList = {}
 
     await async.forEach(nowRunning, async bus => {
-      busList[bus.fleet] = await buses.findDocument({fleet: bus.fleet})
+      busList[bus.fleet] = (await buses.findDocument({fleet: bus.fleet})) || {model: "Unknown", bodywork: "Unknown"}
     })
 
     res.render('by-service', {byDays, service, busList, nowRunning})
