@@ -35,6 +35,8 @@ database.connect({
     res.render('view-all')
   })
   app.get('/last-seen-all', async (req, res) => {
+    let {norail} = querystring.parse(url.parse(req.url).query)
+
     let lastTrips = await trips.aggregate([
       {$sort: {timestamp: -1}},
       {
@@ -58,9 +60,14 @@ database.connect({
       lastTripsByFleet[trip.fleet] = trip
     })
 
-    let allBuses = (await buses.aggregate([
+    let pre = []
+    if (!norail)
+      pre.push({
+        $match: {depot: {$not: {$eq: "Rail"}}}
+      })
+    let allBuses = (await buses.aggregate(pre.concat([
       { $project: {fleet: 1, _id: 0}}
-    ]).toArray()).map(bus => bus.fleet)
+    ])).toArray()).map(bus => bus.fleet)
 
     let busLastSeen = {}
     allBuses.forEach(fleet => {
