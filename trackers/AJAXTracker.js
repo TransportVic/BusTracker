@@ -1,6 +1,8 @@
 const request = require('request')
 const cheerio = require('cheerio')
 const urlData = require('../url_data.json')
+const tripCodes = require('../trips.json')
+const polyline = require('@mapbox/polyline')
 const moment = require('moment')
 require('moment-timezone')
 const LoadIntoDB = require('./LoadIntoDB')
@@ -16,9 +18,13 @@ module.exports = class AJAXTracker {
     this.active = false
     this.baseFreq = baseFreq
     this.unsafeEval = urlData[service].includes('ventura.busminder.com.au')
+    this.forcedAjax = urlData[service].includes('/live/')
 
     if (urlData[service]) {
-      if (urlData[service].includes('/School/RouteMap.aspx') || this.unsafeEval) {
+      if (this.forcedAjax) {
+        this.url = urlData[service]
+        console.log('Forced AJAX on ' + service)
+      } else if (urlData[service].includes('/School/RouteMap.aspx') || this.unsafeEval) {
         this.url = urlData[service]
       } else throw Error(`Could not track service ${service} using poller; try websocket`)
     } else throw new Error(`Cannot find service ${service}`)
@@ -26,17 +32,27 @@ module.exports = class AJAXTracker {
 
   performRequest() {
     request(this.url, (err, res, body) => {
-      if (!body) return setTimeout(this.performRequest.bind(this), 1000 * 60 * (1 + (Math.random()) * .5))
+      if (!body) return setTimeout(this.performRequest.bind(this), 1000 * 60 * (this.baseFreq + (Math.random()) * .5))
+
       const $ = cheerio.load(body)
       const scriptTag = $('#form1 > script:nth-child(6)')
-      const scriptTagData = scriptTag.html().toString().trim().slice(26).replace(/\n/g, '').replace(/;var .+$/, '')
       let routeData
-      if (this.unsafeEval) eval('routeData=' + scriptTagData)
-      else routeData = JSON.parse(scriptTagData)
+
+      if (!scriptTag.length) { // ajax based for websocket method
+        routeData = JSON.parse($('body > script:nth-child(8)').html().trim().slice(26, -2))
+      } else {
+        const scriptTagData = scriptTag.html().toString().trim().slice(26).replace(/\n/g, '').replace(/;var .+$/, '')
+        if (this.unsafeEval) eval('routeData=' + scriptTagData)
+        else routeData = JSON.parse(scriptTagData)
+      }
 
       const buses = []
       const busIDs = []
-      routeData.trips.forEach(trip => {
+
+      let trips = routeData.trips || routeData.routes
+
+      if (!trips) return setTimeout(this.performRequest.bind(this), 1000 * 60 * (this.baseFreq + (Math.random()) * .5))
+      trips.forEach(trip => {
         if (!trip.buses) return setTimeout(this.performRequest.bind(this), 1000 * 60 * (this.baseFreq + (Math.random()) * .5))
         trip.buses.forEach(bus => {
           if (busIDs.includes(bus.id)) return
@@ -45,6 +61,14 @@ module.exports = class AJAXTracker {
           if (!bus.registration.match(/BS?(\d+)/)) return
 
           let service = this.service
+          if (this.forcedAjax) {
+            trip.name = tripCodes[trip.id] || routeData.legend.filter(t=>t.id == trip.id)[0].name
+            if (!trip.name) return console.log(this.service)
+            let position = polyline.decode(bus.position).slice(-1)[0]
+
+            bus.lat = position[0]
+            bus.lng = position[1]
+          }
           trip.name = trip.name.replace('DEV_', '').trim()
 
           if (trip.name.match(/^\w{3,4} .* (to|-) .*$/)) {

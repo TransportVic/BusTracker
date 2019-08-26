@@ -5,9 +5,10 @@ const moment = require('moment')
 require('moment-timezone')
 
 let trackers = []
+let forceAJAX = true
 
 function createTracker(service, baseFreq) {
-  if (urlData[service].includes('/live/'))
+  if (urlData[service].includes('/live/') && !forceAJAX)
     return new WebsocketTracker(service)
   else
     return new AJAXTracker(service, baseFreq)
@@ -17,9 +18,11 @@ let specialTrackers = ['V/Line: Cowes - Dandenong', 'Point Nepean Shuttle', 'Koo
 Object.keys(urlData).forEach(service => {
   let url = urlData[service]
   if (service <= 929 || service.includes('Telebus') || specialTrackers.includes(service)) {
+    let baseFreq
+    if (url.includes('/live/') && forceAJAX) baseFreq = 5
     let tracker = {
       service,
-      tracker: createTracker(service),
+      tracker: createTracker(service, baseFreq),
       running: false
     }
     if (!url.includes('/live/')) {
