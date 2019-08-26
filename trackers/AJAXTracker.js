@@ -71,8 +71,8 @@ module.exports = class AJAXTracker {
           }
           trip.name = trip.name.replace('DEV_', '').trim()
 
-          if (trip.name.match(/^\w{3,4} .* (to|-) .*$/)) {
-            service = trip.name.match(/^(\w{3,4}) .* (to|-) .*$/)[1]
+          if (trip.name.match(/^\d{3}\w? .* (to|-) .*$/)) {
+            service = trip.name.match(/^(\d{3}\w?) .* (to|-) .*$/)[1]
           }
 
           this.updateBusLocation({
