@@ -75,8 +75,14 @@ Object.keys(urlData).forEach(service => {
             m: 'a'
           }
         }
-        trackers.push(trackerAM)
-        trackers.push(trackerPM)
+        if (service.endsWith(' - 1')) // AM Tracker only
+          trackers.push(trackerAM)
+        else if (service.endsWith(' - 2')) // PM Tracker only
+          trackers.push(trackerPM)
+        else {
+          trackers.push(trackerAM) // unified tracker, do both A+PM
+          trackers.push(trackerPM)
+        }
       }
     }
   }
