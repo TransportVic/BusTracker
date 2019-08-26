@@ -11,8 +11,10 @@ database.connect({
   let allTrips = await trips.findDocuments({}).toArray()
 
   await async.forEach(allTrips, async trip => {
-    if (trip.tripName.match(/^\d{3}\w? .* (to|-) .*$/)) {
-      trip.service = trip.tripName.match(/^(\d{3}\w?) .* (to|-) .*$/)[1]
+    if (trip.tripName.match(/^\d{3}[A-Za-z]? .* (to|-) .*$/)) {
+      trip.service = trip.tripName.match(/^(\d{3}[A-Za-z]?) .* (to|-) .*$/)[1]
+    } else {
+      trip.service = trip.tripName
     }
     await trips.updateDocument({_id: trip._id}, {$set: trip})
   })

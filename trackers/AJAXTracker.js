@@ -60,7 +60,6 @@ module.exports = class AJAXTracker {
 
           if (!bus.registration.match(/BS?(\d+)/)) return
 
-          let service = this.service
           if (this.forcedAjax) {
             trip.name = tripCodes[trip.id] || routeData.legend.filter(t=>t.id == trip.id)[0].name
             if (!trip.name) return console.log(this.service)
@@ -69,10 +68,12 @@ module.exports = class AJAXTracker {
             bus.lat = position[0]
             bus.lng = position[1]
           }
-          trip.name = trip.name.replace('DEV_', '').trim()
 
-          if (trip.name.match(/^\d{3}\w? .* (to|-) .*$/)) {
-            service = trip.name.match(/^(\d{3}\w?) .* (to|-) .*$/)[1]
+          trip.name = trip.name.replace('DEV_', '').trim()
+          let service = trip.name
+
+          if (service.match(/^\d{3}[A-Za-z]? .* (to|-) .*$/)) {
+            service = service.match(/^(\d{3}[A-Za-z]?) .* (to|-) .*$/)[1]
           }
 
           this.updateBusLocation({
