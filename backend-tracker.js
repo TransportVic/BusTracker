@@ -51,38 +51,36 @@ Object.keys(urlData).forEach(service => {
         }
       })
     } else { // school runs
-      if (!url.includes('ventura.busminder.com.au')) {// can't track those (for now??)
-        let tracker = createTracker(service, 5)
-        let trackerAM = {
-          operationalDays: ['Mon', 'Tues', 'Wed', 'Thur', 'Fri'],
-          service,
-          tracker,
-          running: false,
-          hours: {
-            gt: 360, // 6.00am-
-            lt: 570, // 9.30am
-            m: 'a'
-          }
+      let tracker = createTracker(service, 5)
+      let trackerAM = {
+        operationalDays: ['Mon', 'Tues', 'Wed', 'Thur', 'Fri'],
+        service,
+        tracker,
+        running: false,
+        hours: {
+          gt: 360, // 6.00am-
+          lt: 570, // 9.30am
+          m: 'a'
         }
-        let trackerPM = {
-          operationalDays: ['Mon', 'Tues', 'Wed', 'Thur', 'Fri'],
-          service,
-          tracker,
-          running: false,
-          hours: {
-            gt: 870, // 2.30pm-
-            lt: 1020, // 5.00pm
-            m: 'a'
-          }
+      }
+      let trackerPM = {
+        operationalDays: ['Mon', 'Tues', 'Wed', 'Thur', 'Fri'],
+        service,
+        tracker,
+        running: false,
+        hours: {
+          gt: 870, // 2.30pm-
+          lt: 1020, // 5.00pm
+          m: 'a'
         }
-        if (service.endsWith(' - 1')) // AM Tracker only
-          trackers.push(trackerAM)
-        else if (service.endsWith(' - 2')) // PM Tracker only
-          trackers.push(trackerPM)
-        else {
-          trackers.push(trackerAM) // unified tracker, do both A+PM
-          trackers.push(trackerPM)
-        }
+      }
+      if (service.endsWith(' - 1')) // AM Tracker only
+        trackers.push(trackerAM)
+      else if (service.endsWith(' - 2')) // PM Tracker only
+        trackers.push(trackerPM)
+      else {
+        trackers.push(trackerAM) // unified tracker, do both A+PM
+        trackers.push(trackerPM)
       }
     }
   }

@@ -15,9 +15,10 @@ module.exports = class AJAXTracker {
     this.service = service
     this.active = false
     this.baseFreq = baseFreq
+    this.unsafeEval = urlData[service].includes('ventura.busminder.com.au')
 
     if (urlData[service]) {
-      if (urlData[service].includes('/School/RouteMap.aspx')) {
+      if (urlData[service].includes('/School/RouteMap.aspx') || this.unsafeEval) {
         this.url = urlData[service]
       } else throw Error(`Could not track service ${service} using poller; try websocket`)
     } else throw new Error(`Cannot find service ${service}`)
@@ -29,11 +30,14 @@ module.exports = class AJAXTracker {
       const $ = cheerio.load(body)
       const scriptTag = $('#form1 > script:nth-child(6)')
       const scriptTagData = scriptTag.html().toString().trim().slice(26).replace(/\n/g, '').replace(/;var .+$/, '')
-      const routeData = JSON.parse(scriptTagData)
+      let routeData
+      if (this.unsafeEval) eval('routeData=' + scriptTagData)
+      else routeData = JSON.parse(scriptTagData)
 
       const buses = []
       const busIDs = []
       routeData.trips.forEach(trip => {
+        if (!trip.buses) return setTimeout(this.performRequest.bind(this), 1000 * 60 * (this.baseFreq + (Math.random()) * .5))
         trip.buses.forEach(bus => {
           if (busIDs.includes(bus.id)) return
           busIDs.push(bus.id)
