@@ -10,7 +10,7 @@ const daysOfWeek = ['Sun', 'Mon', 'Tues', 'Wed', 'Thur', 'Fri', 'Sat']
 
 module.exports = class AJAXTracker {
 
-  constructor (service, baseFreq=2.5) {
+  constructor (service, baseFreq=3.5) {
     this.url = null
     this.service = service
     this.active = false
