@@ -55,15 +55,15 @@ Object.keys(urlData).forEach(service => {
         }
       })
     } else { // school runs
-      let tracker = createTracker(service, 5)
+      let tracker = createTracker(service, config.schoolbusFreq)
       let trackerAM = {
         operationalDays: ['Mon', 'Tues', 'Wed', 'Thur', 'Fri'],
         service,
         tracker,
         running: false,
         hours: {
-          gt: 360, // 6.00am-
-          lt: 570, // 9.30am
+          gt: 405, // 6.45am-
+          lt: 525, // 8.45am
           m: 'a'
         }
       }
@@ -73,8 +73,8 @@ Object.keys(urlData).forEach(service => {
         tracker,
         running: false,
         hours: {
-          gt: 870, // 2.30pm-
-          lt: 1020, // 5.00pm
+          gt: 900, // 3.00pm-
+          lt: 990, // 4.30pm
           m: 'a'
         }
       }

@@ -1,7 +1,8 @@
 {
     "databaseURL": "mongodb://localhost:27017",
-    "tripTimeout": 15,
+    "tripTimeout": 20,
     "forceAJAX": true,
-    "ajaxBaseFreq": 4,
-    "forcedAjaxBaseFreq": 6
+    "ajaxBaseFreq": 5,
+    "forcedAjaxBaseFreq": 7,
+    "schoolbusFreq": 10
 }
