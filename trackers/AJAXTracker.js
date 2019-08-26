@@ -32,7 +32,11 @@ module.exports = class AJAXTracker {
   }
 
   performRequest() {
-    request(this.url, (err, res, body) => {
+    request({
+      method: 'GET',
+      uri: this.url,
+      gzip: true
+    }, (err, res, body) => {
       if (!body) return setTimeout(this.performRequest.bind(this), 1000 * 60 * (this.baseFreq + (Math.random()) * .5))
 
       const $ = cheerio.load(body)
