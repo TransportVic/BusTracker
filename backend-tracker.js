@@ -51,18 +51,33 @@ Object.keys(urlData).forEach(service => {
         }
       })
     } else { // school runs
-      if (!url.includes('ventura.busminder.com.au')) // can't track those (for now??)
-        trackers.push({
+      if (!url.includes('ventura.busminder.com.au')) {// can't track those (for now??)
+        let tracker = createTracker(service)
+        let trackerAM = {
           operationalDays: ['Mon', 'Tues', 'Wed', 'Thur', 'Fri'],
           service,
-          tracker: createTracker(service),
+          tracker,
           running: false,
           hours: {
             gt: 360, // 6.00am-
+            lt: 570, // 9.30am
+            m: 'a'
+          }
+        }
+        let trackerPM = {
+          operationalDays: ['Mon', 'Tues', 'Wed', 'Thur', 'Fri'],
+          service,
+          tracker,
+          running: false,
+          hours: {
+            gt: 870, // 2.30pm-
             lt: 1020, // 5.00pm
             m: 'a'
           }
-        })
+        }
+        trackers.push(trackerAM)
+        trackers.push(trackerPM)
+      }
     }
   }
 })
