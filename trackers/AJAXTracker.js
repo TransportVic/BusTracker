@@ -10,10 +10,11 @@ const daysOfWeek = ['Sun', 'Mon', 'Tues', 'Wed', 'Thur', 'Fri', 'Sat']
 
 module.exports = class AJAXTracker {
 
-  constructor (service) {
+  constructor (service, baseFreq=2.5) {
     this.url = null
     this.service = service
     this.active = false
+    this.baseFreq = baseFreq
 
     if (urlData[service]) {
       if (urlData[service].includes('/School/RouteMap.aspx')) {
@@ -57,7 +58,7 @@ module.exports = class AJAXTracker {
       })
 
       if (this.active)
-        setTimeout(this.performRequest.bind(this), 1000 * 60 * (2.5 + (Math.random()) * .5))
+        setTimeout(this.performRequest.bind(this), 1000 * 60 * (this.baseFreq + (Math.random()) * .5))
     })
   }
 

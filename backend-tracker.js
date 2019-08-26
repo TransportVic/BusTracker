@@ -6,11 +6,11 @@ require('moment-timezone')
 
 let trackers = []
 
-function createTracker(service) {
+function createTracker(service, baseFreq) {
   if (urlData[service].includes('/live/'))
     return new WebsocketTracker(service)
   else
-    return new AJAXTracker(service)
+    return new AJAXTracker(service, baseFreq)
 }
 
 let specialTrackers = ['V/Line: Cowes - Dandenong', 'Point Nepean Shuttle', 'Koo Wee Rup - Pakenham']
@@ -52,7 +52,7 @@ Object.keys(urlData).forEach(service => {
       })
     } else { // school runs
       if (!url.includes('ventura.busminder.com.au')) {// can't track those (for now??)
-        let tracker = createTracker(service)
+        let tracker = createTracker(service, 5)
         let trackerAM = {
           operationalDays: ['Mon', 'Tues', 'Wed', 'Thur', 'Fri'],
           service,
