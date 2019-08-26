@@ -2,6 +2,7 @@ const request = require('request')
 const cheerio = require('cheerio')
 const urlData = require('../url_data.json')
 const tripCodes = require('../trips.json')
+const config = require('../config.json')
 const polyline = require('@mapbox/polyline')
 const moment = require('moment')
 require('moment-timezone')
@@ -12,7 +13,7 @@ const daysOfWeek = ['Sun', 'Mon', 'Tues', 'Wed', 'Thur', 'Fri', 'Sat']
 
 module.exports = class AJAXTracker {
 
-  constructor (service, baseFreq=3.5) {
+  constructor (service, baseFreq=config.ajaxBaseFreq) {
     this.url = null
     this.service = service
     this.active = false

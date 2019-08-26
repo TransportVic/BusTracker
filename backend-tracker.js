@@ -1,11 +1,12 @@
 const AJAXTracker = require('./trackers/AJAXTracker')
 const WebsocketTracker = require('./trackers/WebsocketTracker')
 const urlData = require('./url_data.json')
+const config = require('./config.json')
 const moment = require('moment')
 require('moment-timezone')
 
 let trackers = []
-let forceAJAX = true
+let {forceAJAX} = config
 
 function createTracker(service, baseFreq) {
   if (urlData[service].includes('/live/') && !forceAJAX)
@@ -19,7 +20,7 @@ Object.keys(urlData).forEach(service => {
   let url = urlData[service]
   if (service <= 929 || service.includes('Telebus') || specialTrackers.includes(service)) {
     let baseFreq
-    if (url.includes('/live/') && forceAJAX) baseFreq = 5
+    if (url.includes('/live/') && forceAJAX) baseFreq = config.forcedAjaxBaseFreq
     let tracker = {
       service,
       tracker: createTracker(service, baseFreq),

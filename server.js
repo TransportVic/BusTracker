@@ -83,7 +83,7 @@ database.connect({
 
     let allTrips = await trips.findDocuments({
       date: now.format('YYYY-MM-DD'),
-      time: { $gt: minutesPastMidnight - 5 }
+      time: { $gt: minutesPastMidnight - config.tripTimeout }
     }).toArray()
 
     let tripsByBus = {}
@@ -129,7 +129,7 @@ database.connect({
     let today = now.format('YYYY-MM-DD')
     if (byDays[today]) {
       nowRunning = byDays[today].slice(-1)[0]
-      if (nowRunning.time < minutesPastMidnight - 5) nowRunning = null
+      if (nowRunning.time < minutesPastMidnight - config.tripTimeout) nowRunning = null
     }
 
     res.render('by-fleet', {byDays, fleet, nowRunning})
@@ -163,7 +163,7 @@ database.connect({
     })
 
     let todayDeployment = byDays[now.format('YYYY-MM-DD')] || []
-    let nowRunning = todayDeployment.filter(bus => bus.time > minutesPastMidnight - 5)
+    let nowRunning = todayDeployment.filter(bus => bus.time > minutesPastMidnight - config.tripTimeout)
     let busList = {}
 
     await async.forEach(nowRunning, async bus => {
@@ -189,7 +189,7 @@ database.connect({
       $or: fleetNumbers.map(fleet => {return {fleet}}),
       date: now.format('YYYY-MM-DD'),
       time: {
-        $gt: minutesPastMidnight - 5
+        $gt: minutesPastMidnight - config.tripTimeout
       }
     }).toArray()
 

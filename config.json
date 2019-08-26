@@ -1,3 +1,7 @@
 {
-    "databaseURL": "mongodb://localhost:27017"
+    "databaseURL": "mongodb://localhost:27017",
+    "tripTimeout": 15,
+    "forceAJAX": true,
+    "ajaxBaseFreq": 4,
+    "forcedAjaxBaseFreq": 6
 }
