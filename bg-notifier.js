@@ -36,6 +36,9 @@ let busQuery = {$or: [
     fleet: '287'
   },
   {
+    fleet: '786'
+  },
+  {
     fleet: '858'
   },
   {
@@ -49,7 +52,7 @@ let busQuery = {$or: [
   },
 ]}
 
-let tripQuery = ['788', '631', '703', '733', '737', '800', '802', '804', '862'].map(s => {return{service:s}})
+let tripQuery = ['788', '631', '703', '733', '737', '800', '802', '804', '862', 'Telebus'].map(s => {return{service:s}})
 
 database.connect({
   poolSize: 100
@@ -75,7 +78,7 @@ database.connect({
         if (!fleetMatch)
           fleetMatch = search.fleet === trip.fleet
         if (!svcMatch)
-          svcMatch = search.service === trip.service
+          svcMatch = search.service === trip.service || trip.service.includes(search.service)
       })
 
       if (svcMatch && !fleetNumbers.includes(trip.fleet)) {
