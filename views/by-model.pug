@@ -3,18 +3,43 @@ html
     script(src='https://api.mapbox.com/mapbox-gl-js/v1.2.0/mapbox-gl.js')
     script(src='/tracker/static/utils.js')
     script(src='/tracker/static/depots.js')
+    script(src='/tracker/static/sorttable.js')
     script.
       window.filterValue = ["!{busList.map(bus => bus.fleet).join('", "')}"]
       window.filterKey = 'fleet'
     
     link(href='https://api.mapbox.com/mapbox-gl-js/v1.2.0/mapbox-gl.css' rel='stylesheet')
     link(href='/tracker/static/map.css' rel='stylesheet')
+    link(rel='stylesheet' href='/tracker/static/table.css')
   body
     h1 Bus deployments by model: #{model}
     h2 Now Active:
-    for bus in nowRunning.sort((a, b) => a.fleet - b.fleet)
+    for bus in Object.values(nowRunning).sort((a, b) => a.fleet - b.fleet)
       p #{bus.fleet}: #{bus.service}
       
     div(id='map' style='width: 100vw; height: 50vh;')
+      
+    table(class='sortable')
+      thead
+        tr
+          th Fleet #
+          th Last Seen
+          th Service
+          th History
+      tbody
+        - function pad2(data) { return [0, 0, ...data.toString()].slice(-2).join('') }
+        for fleet in busList.map(bus => bus.fleet)
+          -
+            let bus = lastSeen[fleet]
+            if (!bus) bus = { tripName: '', lastSeen: 'Never' }
+            else bus.lastSeen = `${bus.date}, ${pad2(Math.floor(bus.time / 60))}:${pad2(bus.time % 60)}`
+          tr
+            td #{fleet}
+            td(sorttable_customkey=bus.tripName ? bus.timestamp : "0") #{bus.lastSeen}
+            td #{bus.tripName}
+            td
+              a(href=`/tracker/bus?fleet=${fleet}`) History
+
+      
     script(src='/tracker/static/all.js')
     

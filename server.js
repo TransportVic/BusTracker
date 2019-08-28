@@ -185,24 +185,33 @@ database.connect({
     let fleetNumbers = busList.map(bus => bus.fleet)
     if (!fleetNumbers.length) fleetNumbers = [0]
 
-    let tripsRunning = await trips.findDocuments({
-      $or: fleetNumbers.map(fleet => {return {fleet}}),
-      date: now.format('YYYY-MM-DD'),
-      time: {
-        $gt: minutesPastMidnight - config.tripTimeout
-      }
-    }).toArray()
+    let lastTrips = await trips.aggregate([
+      {$match: { fleet: {$in: fleetNumbers}}},
+      {$sort: {timestamp: -1}},
+      {
+        $group: {
+          _id: {
+            $toInt: "$fleet"
+          },
+          fleet: {$first: "$fleet"},
+          tripName: {$first: "$tripName"},
+          date: {$first: "$date"},
+          time: {$first: "$time"},
+          timestamp: {$first: "$timestamp"}
+        }
+      },
+      {$sort: {_id: 1}}
+    ]).toArray()
 
-    let fleetNumbersSeen = []
-    let nowRunning = []
-    tripsRunning.sort((a, b) => b.timestamp - a.timestamp).forEach(trip => {
-      if (!fleetNumbersSeen.includes(trip.fleet)) {
-        fleetNumbersSeen.push(trip.fleet)
-        nowRunning.push(trip)
+    let lastSeen = {}
+    lastTrips.sort((a, b) => b.timestamp - a.timestamp).forEach(trip => {
+      if (!lastSeen[trip.fleet]) {
+        lastSeen[trip.fleet] = trip
       }
     })
 
-    res.render('by-model', {nowRunning, busList, model})
+    let nowRunning = Object.values(lastSeen).filter(trip => trip.time > minutesPastMidnight - config.tripTimeout)
+    res.render('by-model', {nowRunning, lastSeen, busList, model})
   })
   // app.listen(8080)
 
