@@ -14,8 +14,8 @@ html
   body
     h1 Bus deployments by model: #{model}
     h2 Now Active:
-    for bus in Object.values(nowRunning).sort((a, b) => a.fleet - b.fleet)
-      p #{bus.fleet}: #{bus.service}
+    for bus in nowRunning.sort((a, b) => a.fleet - b.fleet)
+      p #{bus.fleet}: #{bus.tripName}
       
     div(id='map' style='width: 100vw; height: 50vh;')
       
