@@ -17,8 +17,11 @@ function loadBuses() {
     let geojson = {
       "type": "FeatureCollection",
       "features": buses.filter(bus => {
-        if (window.filterKey) return bus[window.filterKey] === window.filterValue ||
-          window.filterValue.includes(bus[window.filterKey])
+        if (window.filterKey) {
+          if (!window.filterValue.match(/[a-zA-Z]/))
+            return bus[window.filterKey] === window.filterValue
+          else return window.filterValue.includes(bus[window.filterKey])
+        }
 
         return true
       }).map(bus => {
