@@ -79,7 +79,7 @@ module.exports = class WebsocketTracker {
     bus.dayOfWeek = today
     bus.timestamp = +now
 
-    if (!this.busLastUpdates[bus.fleet] || (this.busLastUpdates[bus.fleet] < bus.timestamp - 12500)) {
+    if (!this.busLastUpdates[bus.fleet] || (this.busLastUpdates[bus.fleet] < bus.timestamp - 15000)) {
       LoadIntoDB.process(bus)
       this.busLastUpdates[bus.fleet] = bus.timestamp
     }
