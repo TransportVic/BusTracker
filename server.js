@@ -210,7 +210,9 @@ database.connect({
       }
     })
 
-    let nowRunning = Object.values(lastSeen).filter(trip => trip.time > minutesPastMidnight - config.tripTimeout)
+    let nowRunning = Object.values(lastSeen).filter(trip => {
+      return trip.date == now.format('YYYY-MM-DD') && trip.time > minutesPastMidnight - config.tripTimeout
+    })
     res.render('by-model', {nowRunning, lastSeen, busList, model})
   })
   // app.listen(8080)
