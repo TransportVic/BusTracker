@@ -2,6 +2,7 @@ const signalR = require('signalr-client')
 const polyline = require('@mapbox/polyline')
 const urlData = require('../url_data.json')
 const tripCodes = require('../trips.json')
+const config = require('../config.json')
 const moment = require('moment')
 require('moment-timezone')
 const LoadIntoDB = require('./LoadIntoDB')
@@ -79,7 +80,7 @@ module.exports = class WebsocketTracker {
     bus.dayOfWeek = today
     bus.timestamp = +now
 
-    if (!this.busLastUpdates[bus.fleet] || (this.busLastUpdates[bus.fleet] < bus.timestamp - 15000)) {
+    if (!this.busLastUpdates[bus.fleet] || (this.busLastUpdates[bus.fleet] < bus.timestamp - config.websocketUpdateInterval)) {
       LoadIntoDB.process(bus)
       this.busLastUpdates[bus.fleet] = bus.timestamp
     }

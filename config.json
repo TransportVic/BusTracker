@@ -4,5 +4,6 @@
     "forceAJAX": false,
     "ajaxBaseFreq": 6,
     "forcedAjaxBaseFreq": 7,
-    "schoolbusFreq": 10
+    "schoolbusFreq": 10,
+    "websocketUpdateInterval": 17500
 }
