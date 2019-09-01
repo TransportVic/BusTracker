@@ -36,6 +36,9 @@ let busQuery = {$or: [
     fleet: '287'
   },
   {
+    fleet: '484'
+  },
+  {
     fleet: '786'
   },
   {
