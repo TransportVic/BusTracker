@@ -27,6 +27,8 @@ database.connect({
 }, async err => {
   trips = database.getCollection('ventura bus trips')
   buses = database.getCollection('ventura buses')
+  trips.createIndex({fleet: 1, service: 1, date: 1, time: 1})
+  buses.createIndex({fleet: 1, depot: 1, model: 1})
 
   app.get('/', async (req, res) => {
     res.render('index')
