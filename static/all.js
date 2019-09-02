@@ -18,7 +18,7 @@ function loadBuses() {
       "type": "FeatureCollection",
       "features": buses.filter(bus => {
         if (window.filterKey) {
-          if (!window.filterValue.match(/[a-zA-Z]/))
+          if (typeof window.filterValue == 'string' && !window.filterValue.match(/[a-zA-Z]/))
             return bus[window.filterKey] === window.filterValue
           else return window.filterValue.includes(bus[window.filterKey])
         }
