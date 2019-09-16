@@ -18,14 +18,14 @@ module.exports = class AJAXTracker {
     this.service = service
     this.active = false
     this.baseFreq = baseFreq
-    this.unsafeEval = urlData[service].includes('ventura.busminder.com.au')
+    this.venturaBM = urlData[service].includes('ventura.busminder.com.au')
     this.forcedAjax = urlData[service].includes('/live/')
 
     if (urlData[service]) {
       if (this.forcedAjax) {
         this.url = urlData[service]
         console.log('Forced AJAX on ' + service)
-      } else if (urlData[service].includes('/School/RouteMap.aspx') || this.unsafeEval) {
+      } else if (urlData[service].includes('/School/RouteMap.aspx') || this.venturaBM) {
         this.url = urlData[service]
       } else throw Error(`Could not track service ${service} using poller; try websocket`)
     } else throw new Error(`Cannot find service ${service}`)
@@ -56,9 +56,9 @@ module.exports = class AJAXTracker {
         scriptTag = $('body > script:nth-child(8)')
       }
 
-      const scriptTagData = scriptTag.html().toString().trim().slice(26).replace(/\n/g, '').replace(/;var .+$/, '')
-      if (this.unsafeEval) eval('routeData=' + scriptTagData)
-      else routeData = JSON.parse(scriptTagData)
+      let scriptTagData = scriptTag.html().toString().trim().slice(26).replace(/\n/g, '').replace(/;var .+$/, '')
+      if (this.forcedAjax) scriptTagData = scriptTagData.slice(0, -2);
+      eval('routeData=' + scriptTagData)
 
       const buses = []
       const busIDs = []
