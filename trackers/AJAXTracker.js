@@ -35,21 +35,30 @@ module.exports = class AJAXTracker {
     request({
       method: 'GET',
       uri: this.url,
-      gzip: true
+      gzip: true,
+      headers: (this.forcedAjax ? {
+        'Origin': 'http://maps.busminder.com.au',
+        'User-Agent': 'Mozilla/5.0 (Macintosh, Intel Mac OS X 10_14_2) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.2 Safari/605.1.15',
+        'Referer': 'http://maps.busminder.com.au/',
+        'Host': 'maps.busminder.com.au:5031'
+      } : {
+        'User-Agent': 'Mozilla/5.0 (Macintosh, Intel Mac OS X 10_14_2) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.2 Safari/605.1.15',
+        'Host': 'www.busminder.com.au'
+      })
     }, (err, res, body) => {
       if (!body) return setTimeout(this.performRequest.bind(this), 1000 * 60 * (this.baseFreq + (Math.random()) * .5))
 
       const $ = cheerio.load(body)
-      const scriptTag = $('#form1 > script:nth-child(6)')
+      let scriptTag = $('#form1 > script:nth-child(6)')
       let routeData
 
       if (!scriptTag.length) { // ajax based for websocket method
-        routeData = JSON.parse($('body > script:nth-child(8)').html().trim().slice(26, -2))
-      } else {
-        const scriptTagData = scriptTag.html().toString().trim().slice(26).replace(/\n/g, '').replace(/;var .+$/, '')
-        if (this.unsafeEval) eval('routeData=' + scriptTagData)
-        else routeData = JSON.parse(scriptTagData)
+        scriptTag = $('body > script:nth-child(8)')
       }
+
+      const scriptTagData = scriptTag.html().toString().trim().slice(26).replace(/\n/g, '').replace(/;var .+$/, '')
+      if (this.unsafeEval) eval('routeData=' + scriptTagData)
+      else routeData = JSON.parse(scriptTagData)
 
       const buses = []
       const busIDs = []
