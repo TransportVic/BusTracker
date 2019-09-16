@@ -113,8 +113,8 @@ function checkTrackers() {
     let newState = runsToday && runsNow
 
     if (newState && !tracker.running) {
-      const delay = (Math.random() * (5) + 1.5 * i) * 500;
-      console.log('delaying tracker for ' + tracker.service + ' by ' + (Math.random() * (5) + 1.5 * i) * 500/1000 + ' seconds')
+      const delay = (Math.random() * (10) + 2.5 * i) * 1000;
+      console.log('delaying tracker for ' + tracker.service + ' by ' + (Math.random() * (10) + 2.5 * i) * 1000/1000 + ' seconds')
       setTimeout(() => {
         console.log('activated tracker for ' + tracker.service)
         tracker.tracker.start()
