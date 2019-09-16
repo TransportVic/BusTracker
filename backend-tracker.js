@@ -98,7 +98,7 @@ function checkTrackers() {
   const minutesPastMidnight = now.diff(startOfToday, 'minutes')
   const today = daysOfWeek[now.day()]
 
-  trackers.forEach(tracker => {
+  trackers.forEach((tracker, i) => {
     let runsToday = true
     let runsNow = true
 
@@ -113,9 +113,13 @@ function checkTrackers() {
     let newState = runsToday && runsNow
 
     if (newState && !tracker.running) {
-      console.log('activated tracker for ' + tracker.service)
-      tracker.tracker.start()
-      tracker.running = true
+      const delay = (Math.random() * (7.5) + 2 * i) * 500;
+      console.log('delaying tracker for ' + tracker.service + ' by ' + (Math.random() * (7.5) + 2 * i) * 2 + ' seconds')
+      setTimeout(() => {
+        console.log('activated tracker for ' + tracker.service)
+        tracker.tracker.start()
+        tracker.running = true
+      }, delay);
     } else if (!newState && tracker.running) {
       console.log('deactivated tracker for' + tracker.service)
       tracker.tracker.stop()
