@@ -118,8 +118,9 @@ function checkTrackers() {
       setTimeout(() => {
         console.log('activated tracker for ' + tracker.service)
         tracker.tracker.start()
-        tracker.running = true
       }, delay);
+
+      tracker.running = true
     } else if (!newState && tracker.running) {
       console.log('deactivated tracker for' + tracker.service)
       tracker.tracker.stop()
