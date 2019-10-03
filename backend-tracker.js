@@ -16,7 +16,12 @@ function createTracker(service, baseFreq) {
 }
 
 let specialTrackers = ['V/Line: Cowes - Dandenong', 'Point Nepean Shuttle', 'Koo Wee Rup - Pakenham']
-Object.keys(urlData).forEach(service => {
+
+function shuffle(array) {
+  return array.sort(() => Math.random() - 0.5)
+}
+
+shuffle(Object.keys(urlData)).forEach(service => {
   let url = urlData[service]
   if (url.includes('RouteMap')) return
   if (service <= 929 || service.includes('Telebus') || specialTrackers.includes(service)) {
