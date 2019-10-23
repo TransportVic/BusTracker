@@ -12,18 +12,18 @@
     "@mapbox/polyline": "^1.1.0",
     "async": "^3.1.0",
     "cheerio": "^1.0.0-rc.3",
-    "csv-parse": "^4.4.5",
+    "csv-parse": "^4.6.5",
     "express": "^4.17.1",
     "moment": "^2.24.0",
-    "moment-timezone": "^0.5.26",
-    "mongodb": "^3.3.0",
+    "moment-timezone": "^0.5.27",
+    "mongodb": "^3.3.3",
     "pug": "^2.0.4",
     "querystring": "^0.2.0",
     "readline-sync": "^1.4.10",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
-    "safe-regex": "^2.0.2",
+    "safe-regex": "^2.1.1",
     "signalr-client": "0.0.19",
-    "websocket": "^1.0.29"
+    "websocket": "^1.0.30"
   }
 }
