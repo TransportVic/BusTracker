@@ -61,6 +61,7 @@ shuffle(Object.keys(urlData)).forEach(service => {
         }
       })
     } else { // school runs
+      return
       let tracker = createTracker(service, config.schoolbusFreq)
       let trackerAM = {
         operationalDays: ['Mon', 'Tues', 'Wed', 'Thur', 'Fri'],
