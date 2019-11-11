@@ -15,7 +15,7 @@ function createTracker(service, baseFreq) {
     return new AJAXTracker(service, baseFreq)
 }
 
-let specialTrackers = ['V/Line: Cowes - Dandenong', 'Point Nepean Shuttle', 'Koo Wee Rup - Pakenham']
+let specialTrackers = ['Cowes - Dandenong', 'Koo Wee Rup - Pakenham']
 
 function shuffle(array) {
   return array.sort(() => Math.random() - 0.5)
@@ -122,7 +122,7 @@ function checkTrackers() {
 
     if (newState && !tracker.running) {
       runCount++;
-      const delay = (Math.random() * 10 + 6.5 * runCount) * 1000;
+      const delay = (Math.random() * 5 + 6.5 * runCount) * 1000;
       console.log('delaying tracker for ' + tracker.service + ' by ' + delay / 1000 + ' seconds')
       setTimeout(() => {
         console.log('activated tracker for ' + tracker.service)
