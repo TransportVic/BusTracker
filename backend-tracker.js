@@ -32,18 +32,10 @@ shuffle(Object.keys(urlData)).forEach(service => {
       tracker: createTracker(service, baseFreq),
       running: false
     }
-    if (!url.includes('/live/')) {
-      tracker.hours = {
-        gt: 300, // 5.00am-
-        lt: 1439, // 11.59pm
-        m: 'a'
-      }
-    } else {
-      tracker.hours = {
-        gt: 285, // 4.45am-
-        lt: 30, // 0.30am
-        m: 'o'
-      }
+    tracker.hours = {
+      gt: 300, // 5.00am-
+      lt: 1200, // 8.00pm
+      m: 'a'
     }
 
     trackers.push(tracker)
@@ -140,3 +132,13 @@ function checkTrackers() {
 
 checkTrackers()
 setInterval(checkTrackers, 1000 * 60 * 1)
+
+function restartTrackers() {
+  trackers.forEach((tracker) => {
+    if (!tracker.running)
+      tracker.tracker.stop()
+  })
+  checkTrackers()
+}
+
+setInterval(restartTrackers, 1000 * 60 * 60 * 2)
