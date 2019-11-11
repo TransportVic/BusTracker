@@ -15,8 +15,7 @@ module.exports = class WebsocketTracker {
   constructor (service) {
     this.groupCode = null
     this.service = service
-    this.busLastUpdates = {}
-
+    
     if (urlData[service]) {
       if (urlData[service].includes('/live/')) {
         this.groupCode = urlData[service].slice(-36)
@@ -85,10 +84,7 @@ module.exports = class WebsocketTracker {
     bus.dayOfWeek = today
     bus.timestamp = +now
 
-    if (!this.busLastUpdates[bus.fleet] || (this.busLastUpdates[bus.fleet] < bus.timestamp - config.websocketUpdateInterval)) {
-      LoadIntoDB.process(bus)
-      this.busLastUpdates[bus.fleet] = bus.timestamp
-    }
+    LoadIntoDB.process(bus)
   }
 
   start() {

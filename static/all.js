@@ -90,6 +90,6 @@ map.on('load', function () {
     });
   }
 
-  setInterval(loadBuses, 15000)
+  setInterval(loadBuses, 7500)
   loadBuses()
 });
